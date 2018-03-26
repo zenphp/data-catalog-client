@@ -30,7 +30,7 @@ import org.w3c.dom.Text;
 /**
  * The Dataset class is based on Project Open Data metadata specification 1.1. More
  * details can be found here: https://project-open-data.cio.gov/v1.1/schema/#dataset
- * 
+ *
  * There are three ways to load the dataset object:
  * <p>
  * 1.  Load Dataset from a CKAN JSON Object.    @see loadDatasetFromCKAN_JSON(JSONObject):void
@@ -40,7 +40,7 @@ import org.w3c.dom.Text;
  * These methods will throw a Dataset Exception if the JSON is not in Project
  * Open Data compliance.
  * <p>
- * Also, the variables are exposed so another way to populate Dataset is to set variables like 
+ * Also, the variables are exposed so another way to populate Dataset is to set variables like
  * <code>
  * Dataset ds = new Dataset();
  * ds.setTitle("My new Title");
@@ -55,7 +55,7 @@ import org.w3c.dom.Text;
  * 2.  Project Open Data compliant Map.  Linked HashMap is used to preserve order against JSON specification.  This is used
  * for testing.  @see toProjectOpenDataJSON(): Map
  * 3.  Text delimited format for opening in Excel, etc.  This is tab delimited format  @see toCSV()String
- * 
+ *
  * @author bbrotsos
  *
  */
@@ -135,27 +135,27 @@ public class Dataset implements Comparable<Dataset> {
 	public final static String CKAN_DATASET_THEME = "category";
 	public final static String CKAN_DATASET_TITLE = "title";
 	public final static String CKAN_DATASET_UNIQUE_IDENTIFIER = "unique_id";
-	
+
 	//additional field for CKAN to make private
 	public final static String CKAN_DATASET_PRIVATE = "private";
 	public final static Boolean CKAN_DATASET_PRIVATE_VALUE = true;
-	
+
 	/**
 	 * There are 3 attributes in CKAN at Dataset level.
 	 */
 	public final static String CKAN_DATASET_REVISION_TIMESTAMP = "revision_timestamp";
 	public final static String CKAN_DATASET_METADATA_CREATED = "metadata_created";
 	public final static String CKAN_DATASET_METADATA_MODIFIED = "metadata_modified";
-	
+
 	//Enumeration for handling access levels.  More documentation at Project Open Data.
 	public enum AccessLevel
 	{
-		PUBLIC("public"), 
-		RESTRICTED("restricted public"), 
+		PUBLIC("public"),
+		RESTRICTED("restricted public"),
 		PRIVATE ("non-public");
-		
+
 		private final String accessLevel;
-		
+
 		private AccessLevel(String accessLevel)
 		{
 			this.accessLevel = accessLevel;
@@ -182,7 +182,7 @@ public class Dataset implements Comparable<Dataset> {
 	private List<String> themeList;
 	private String temporal;
 	private String title;
-	
+
 	//federal government project open data extension documentation here: https://project-open-data.cio.gov/v1.1/schema/
 	private String accessLevel;
 	private List<String> bureauCodeList;
@@ -198,23 +198,23 @@ public class Dataset implements Comparable<Dataset> {
 	private String rights;
 	private String systemOfRecords;
 	private String uniqueIdentifier;
-	
+
 	//CKAN Specific
 	private Date metadataModifiedDate;
 	private Date metadataCreatedDate;
 	private Date revisionTimeStamp;
-	
+
 	//This needs to be populated in order run create
 	private String ownerOrganization;
 
 	//Agency specific (legacy)
 	private String comments;
 	private String webService;
-	
+
 	//Bureau specific (might move to struct or class)
 	private String bureauName;
 	private String bureauAbbreviation;
-	
+
 	private DatasetException dsEx;
 	private static final Logger log = Logger.getLogger(Dataset.class.getName());
 
@@ -232,7 +232,7 @@ public class Dataset implements Comparable<Dataset> {
 		referenceList = new ArrayList<String>();
 		themeList = new ArrayList<String>();
 	}
-	
+
 	//TODO: Add documentation to methods
 	private void loadDistributionListFromCKAN(JSONArray resourcesArray)
 	{
@@ -243,7 +243,7 @@ public class Dataset implements Comparable<Dataset> {
 		else
 		{
 			for (int i=0; i < resourcesArray.size(); i++)
-		    {	    	
+		    {
 		    	final JSONObject resource = (JSONObject) resourcesArray.get(i);
 
 	    		Distribution distribution = new Distribution();
@@ -258,9 +258,9 @@ public class Dataset implements Comparable<Dataset> {
 	    	}
 	    }
 	}
-	
+
 	/**
-	 * This method takes a key and value using the CKAN Extra format and converts it to 
+	 * This method takes a key and value using the CKAN Extra format and converts it to
 	 * DCAT/Project Open Data.
 	 * @param key String The key in the CKAN extra field.
 	 * @param value String The value in the CKAN extra fields
@@ -290,7 +290,7 @@ public class Dataset implements Comparable<Dataset> {
 			case CKAN_DATASET_LICENSE: setLicense(value); break;
 			case CKAN_DATASET_MODIFIED: setModified(value); break;
 			case CKAN_DATASET_PRIMARY_IT_INVESTMENT_UII: setPrimaryITInvestmentUII(value); break;
-			case CKAN_DATASET_PROGRAM_CODE: 
+			case CKAN_DATASET_PROGRAM_CODE:
 			case CKAN_DATASET_PROGRAM_CODE_LEGACY: setProgramCodeList(value); break;
 			case CKAN_DATASET_REFERENCES: setReferenceList(value); break;
 			case CKAN_DATASET_RIGHTS: setRights(value); break;
@@ -304,11 +304,11 @@ public class Dataset implements Comparable<Dataset> {
 			case Contact.CKAN_CONTACT_EMAIL_ADDRESS: contactPoint.setEmailAddress(value); break;
 			case Contact.CKAN_CONTACT_FULL_NAME: contactPoint.setFullName(value); break;
 			case Publisher.CKAN_PUBLISHER_NAME: publisher.setName(value); break;
-			case Publisher.CKAN_PUBLISHER_SUBORGANIZATION_NAME : 
+			case Publisher.CKAN_PUBLISHER_SUBORGANIZATION_NAME :
 				subOrganization = new Publisher();
 				subOrganization.setName(value); break;
 		}
-		
+
 		//move these lines elsewhere
 		contactPoint.setType("vcard:Contact");
 		publisher.setType("org:Organization");
@@ -319,9 +319,9 @@ public class Dataset implements Comparable<Dataset> {
 			publisher.setSubOrganization(subOrganization);
 		}
 	}
-	
+
 	/**
-	 * This method takes a key and value using the DKAN Extra format and converts it to 
+	 * This method takes a key and value using the DKAN Extra format and converts it to
 	 * DCAT/Project Open Data.
 	 * Hardcoding values for ARS
 	 * @param key String The key in the CKAN extra field.
@@ -331,13 +331,13 @@ public class Dataset implements Comparable<Dataset> {
 	private void loadExtraFromDKAN(String key, String value) throws ParseException
 	{
 		Publisher subOrganization = null;
-		
+
 		//TODO:  terribly inefficient, gets called on every iteration
 		publisher.setName("Agricultural Research Service, Department of Agriculture");
 		setBureauCodeList("005:18");
 		setProgramCodeList("005:040");
-		
-		
+
+
 		value.trim();
 		switch (key)
 		{
@@ -359,7 +359,7 @@ public class Dataset implements Comparable<Dataset> {
 			case "license_title": setLicense(value); break;
 			case CKAN_DATASET_MODIFIED: setModified(value); break;
 			case CKAN_DATASET_PRIMARY_IT_INVESTMENT_UII: setPrimaryITInvestmentUII(value); break;
-			case CKAN_DATASET_PROGRAM_CODE: 
+			case CKAN_DATASET_PROGRAM_CODE:
 			case CKAN_DATASET_PROGRAM_CODE_LEGACY: setProgramCodeList("53"); break;
 			case CKAN_DATASET_REFERENCES: setReferenceList(value); break;
 			case CKAN_DATASET_RIGHTS: setRights(value); break;
@@ -373,12 +373,12 @@ public class Dataset implements Comparable<Dataset> {
 			case "field_contact_email": contactPoint.setEmailAddress(value); break;
 			case "field_contact_name": contactPoint.setFullName(value); break;
 			case Publisher.CKAN_PUBLISHER_NAME: publisher.setName("USDA/ARS"); break;
-			case Publisher.CKAN_PUBLISHER_SUBORGANIZATION_NAME : 
+			case Publisher.CKAN_PUBLISHER_SUBORGANIZATION_NAME :
 				subOrganization = new Publisher();
 				subOrganization.setName(value); break;
-			
+
 		}
-		
+
 		//TODO: move these lines elsewhere
 		contactPoint.setType("vcard:Contact");
 		publisher.setType("org:Organization");
@@ -389,7 +389,7 @@ public class Dataset implements Comparable<Dataset> {
 			publisher.setSubOrganization(subOrganization);
 		}
 	}
-	
+
 	/**
 	 * For each CKAN extra loads into this dataset object.
 	 * @param extraList
@@ -398,11 +398,11 @@ public class Dataset implements Comparable<Dataset> {
 	private void loadExtraListFromCKAN(JSONArray extraList) throws DatasetException
 	{
 	    for (int i = 0; i < extraList.size(); i++)
-		{			
+		{
 			JSONObject extraObject = (JSONObject) extraList.get(i);
 			String key = (String) extraObject.get("key");
 			String value = (String) extraObject.get("value");
-			
+
 			try{
 				loadExtraFromCKAN(key, value);
 			}
@@ -412,7 +412,7 @@ public class Dataset implements Comparable<Dataset> {
 			}
 		}
 	}
-	
+
 	/**
 	 * For each DKANextra loads into this dataset object.
 	 * @param extraList
@@ -425,7 +425,7 @@ public class Dataset implements Comparable<Dataset> {
 
 		@SuppressWarnings("unchecked")
 		Set<String> extraKeySet = extraObject.keySet();
-		
+
 		for (String key:extraKeySet)
 		{
 			Object testClass = extraObject.get(key);
@@ -441,20 +441,20 @@ public class Dataset implements Comparable<Dataset> {
 					dsEx.addError(e.toString());
 				}
 			}
-        	
+
 		}
 		//Hardcoded Fields
-		
-		
-		
+
+
+
 	}
-	
+
 	/**
 	 * This method takes a valid data.json file that conforms to Dataset in Project open data
 	 * and loads it into Dataset object.
 	 * @param podFileName String The name of the file to import.
 	 * @throws DatasetException This is thrown when the data.json file is not valid Project Open Data 1.1 json format.
-	 * This can include business validation rules. 
+	 * This can include business validation rules.
 	 * @throws IOException This is thrown if there is issue reading the file, most likely file does not exist
 	 */
 	public void loadDatasetFromFile(String podFileName) throws DatasetException, IOException
@@ -469,41 +469,41 @@ public class Dataset implements Comparable<Dataset> {
 		}
 		loadFromProjectOpenDataJSON(datasetObject);
 	}
-	
+
 	/**
-	 * Populates this class from a JSON Object at the package level delivered from CKAN. 
+	 * Populates this class from a JSON Object at the package level delivered from CKAN.
 	 * <p>
-	 * It takes in a CKAN JSON formated dataset and populates the instance variables.  
+	 * It takes in a CKAN JSON formated dataset and populates the instance variables.
 	 * Most of the additional Project Open Data fields are in the Extras JSONArray.
-	 * 
+	 *
 	 * @param datasetCKAN_JSON JSONObject This is most likely directly from CKAN API call.  This
 	 * is also considered the Package level for CKAN.
 	 */
 	public void loadDatasetFromCKAN_JSON(JSONObject datasetCKAN_JSON) throws DatasetException
-	{	
+	{
 		if (datasetCKAN_JSON == null)
 		{
 			throw new NullPointerException("datasetCKAN_JSON cannot be null");
 		}
-				
+
 		//issue, title is in two places. To solve this set it initially, and let extra tag overwrite if it exists in extra.
 		setTitle((String) datasetCKAN_JSON.get("title"));
 		setDescription((String) datasetCKAN_JSON.get(CKAN_DATASET_DESCRIPTION_NOTES));
-	    
+
 		//TODO:Both of these are set to anaylize when CKAN metadata modified date is different from
 		//extra where key equals "modified"
 		setModified ((String) datasetCKAN_JSON.get(CKAN_DATASET_METADATA_MODIFIED));
 	    setMetadataModifiedDate ((String) datasetCKAN_JSON.get(CKAN_DATASET_METADATA_MODIFIED));
 	    setMetadataCreatedDate((String) datasetCKAN_JSON.get(CKAN_DATASET_METADATA_CREATED));
 	    setRevisionTimeStamp((String) datasetCKAN_JSON.get(CKAN_DATASET_REVISION_TIMESTAMP));
-	    
+
 	    loadDistributionListFromCKAN((JSONArray) datasetCKAN_JSON.get(CKAN_DATASET_DISTRIBUTION));
-	    
+
 	    final JSONArray extraList = (JSONArray) datasetCKAN_JSON.get(CKAN_DATASET_EXTRAS);
 	    if (extraList == null)
 	    {
 //	    	throw new IllegalArgumentException("JSON is invalid.  extras array is required.");
-	    	// This is coming from Ag Data Commons which uses 
+	    	// This is coming from Ag Data Commons which uses
 	    	final JSONObject dkanExtraList = (JSONObject) datasetCKAN_JSON.get("dkan_additional_fields");
 	    	loadExtraListFromDKAN(dkanExtraList);
 	    }
@@ -511,18 +511,18 @@ public class Dataset implements Comparable<Dataset> {
 	    {
 	    	loadExtraListFromCKAN(extraList);
 	    }
-	    
-	    
+
+
 		loadKeywordsFromCKAN((JSONArray)datasetCKAN_JSON.get("tags"));
-		
+
 		if (!validateDataset() || dsEx.exceptionSize() > 0)
 		{
 			throw (dsEx);
 		}
 	}
-	
+
 	/**
-	 * Loads CKAN tags into this object.  
+	 * Loads CKAN tags into this object.
 	 * @param tagsArray An array from CKAN
 	 */
 	private void loadKeywordsFromCKAN(JSONArray tagsArray)
@@ -531,7 +531,7 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			throw new IllegalArgumentException("JSON is invalid for Project Open Data.  Expecting 'tags' array.");
 		}
-		
+
 		for(int k=0; k<tagsArray.size(); k++)
 		{
 			final JSONObject tagObject = (JSONObject)tagsArray.get(k);
@@ -547,30 +547,30 @@ public class Dataset implements Comparable<Dataset> {
 			}
 		}
 	}
-	
+
 	/**
 	 * Converts Project Open Data object to CKAN compatible JSON dataset.
 	 * <p>
 	 * Marshals the object to a format that can be sent to CKAN for creating or updating datasets.
-	 * 
+	 *
 	 * @return JSONObject This is CKAN compatible JSON
 	 */
 	@SuppressWarnings("unchecked")
 	public JSONObject toCKAN_JSON()
 	{
 		JSONObject datasetCKAN_JSON = new JSONObject();
-		
+
 		//TODO: make this a variable.  Always set to Private for testing
 		//datasetCKAN_JSON.put(CKAN_DATASET_PRIVATE, CKAN_DATASET_PRIVATE_VALUE);
-		
+
 		//TODO: take out hardcoded "name, notes, etc"
 		datasetCKAN_JSON.put("name", getName());
 		datasetCKAN_JSON.put("notes", description);
 		datasetCKAN_JSON.put("title", this.title);
 		datasetCKAN_JSON.put("owner_org", ownerOrganization);
-		
+
 		datasetCKAN_JSON.put(CKAN_DATASET_EXTRAS, addCkanExtras());
-		
+
 		JSONArray tagsArray = new JSONArray();
 		for (int i = 0; i < keywordList.size(); i++)
 		{
@@ -580,7 +580,7 @@ public class Dataset implements Comparable<Dataset> {
 			tagsArray.add(tagObject);
 		}
 		datasetCKAN_JSON.put("tags", tagsArray);
-		
+
 		//add distribution
 		JSONArray distributionArray = new JSONArray();
 		for (int i=0; i < distributionList.size(); i++)
@@ -590,10 +590,10 @@ public class Dataset implements Comparable<Dataset> {
 			distributionArray.add(distributionObject);
 		}
 		datasetCKAN_JSON.put(CKAN_DATASET_DISTRIBUTION, distributionArray);
-		
+
 		return datasetCKAN_JSON;
 	}
-	
+
 	/**
 	 * Complies the extra list in special CKAN format that supports Project Open Data.
 	 * @return
@@ -604,7 +604,7 @@ public class Dataset implements Comparable<Dataset> {
 	private JSONArray addCkanExtras()
 	{
 		JSONArray extrasArray = new JSONArray();
-		
+
 		//The fields title and description are added at both the Dataset and Extra
 		extrasArray.add(createExtraObject(PROJECT_OPEN_DATA_DATASET_TITLE, title));
 		extrasArray.add(createExtraObject("notes", description));
@@ -653,12 +653,12 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			extrasArray.add(createExtraObject(Publisher.CKAN_PUBLISHER, publisher.getName()));
 		}
-		
+
 		if (issued != null)
 		{
 			extrasArray.add(createExtraObject(CKAN_DATASET_ISSUED, Utils.convertDateToISOString(issued)));
 		}
-		
+
 		if (rights != null)
 		{
 			extrasArray.add(createExtraObject(CKAN_DATASET_RIGHTS, rights));
@@ -702,13 +702,13 @@ public class Dataset implements Comparable<Dataset> {
 		}
 		return extrasArray;
 	}
-	
+
 	/**
 	 * Method to create CKAN compatible extra object.
 	 * <p>
 	 * Project Open Data uses the extra object for extensions.  The extra object is just
 	 * a key-value for extending CKAN interface.
-	 * 
+	 *
 	 * @param key  the key in key-value pair
 	 * @param value the value in key-value pair.
 	 * @return key-value JSON Object
@@ -724,7 +724,7 @@ public class Dataset implements Comparable<Dataset> {
 		}
 		return extraObject;
 	}
-	
+
 	/**
 	 * This is to use Apache CSVParser
 	 * @return
@@ -735,7 +735,7 @@ public class Dataset implements Comparable<Dataset> {
 		datasetString.add(bureauName);
 		datasetString.add(title);
 		datasetString.add(description);
-		
+
 		//TODO: move to distribution class
     	if (distributionList.size() > 0)
 		{
@@ -750,7 +750,7 @@ public class Dataset implements Comparable<Dataset> {
     			}
 				Distribution outputDistribution = distributionList.get(i);
 				mediaTypeString = mediaTypeString + outputDistribution.getMediaType();
-				
+
 				downloadURLString = downloadURLString + outputDistribution.getDownloadURL();
     		}
 			datasetString.add(mediaTypeString);
@@ -825,7 +825,7 @@ public class Dataset implements Comparable<Dataset> {
     		referenceListString = referenceListString + referenceList.get(i) + ";";
 		}
     	datasetString.add(referenceListString);
-    	
+
     	if (metadataCreatedDate != null)
     	{
     		datasetString.add(Utils.convertDateToISOString(metadataCreatedDate));
@@ -854,16 +854,16 @@ public class Dataset implements Comparable<Dataset> {
     	{
     		datasetString.add(isPartOf);
     	}
-    	
+
     	return datasetString;
 	}
-	
+
 	/**
 	 * Converts Dataset object to Project Open Data compliant Map.
 	 * <p>
 	 * This comment is from previous version: Map was used over JSONObject to preserve attribute order.  This is outside the JSON spec
 	 * but makes testing efficient (String == String)
-	 *  
+	 *
 	 * @return JSONObject Version changed from a linked map (order preserved) of Dataset object in Project Open Data 1.1 compliant metadata.
 	 */
 	@SuppressWarnings("unchecked")
@@ -877,10 +877,10 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_MODIFIED, Utils.convertDateToISOString(modified));
 		}
-		
-		dataSetJSON.put(Publisher.PROJECT_OPEN_DATA_PUBLISHER, publisher.toProjectOpenDataJSON());	
+
+		dataSetJSON.put(Publisher.PROJECT_OPEN_DATA_PUBLISHER, publisher.toProjectOpenDataJSON());
 		dataSetJSON.put (Contact.PROJECT_OPEN_DATA_CONTACT_POINT, contactPoint.toProjectOpenDataJSON());
-		
+
 		dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_UNIQUE_IDENTIFIER, uniqueIdentifier);
 		dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_ACCESS_LEVEL, accessLevel);
 		dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_CONFORMS_TO, conformsTo);
@@ -899,7 +899,7 @@ public class Dataset implements Comparable<Dataset> {
     	{
         	dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_LICENSE, "https://creativecommons.org/publicdomain/zero/1.0/");
     	}
-    	
+
     	dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_SPATIAL, spatial);
 		if (temporal != null && temporal.isEmpty() && !temporal.equals(""))
 		{
@@ -908,11 +908,11 @@ public class Dataset implements Comparable<Dataset> {
 		if (issued != null)
 		{
 			dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_ISSUED, Utils.convertDateToISOString(issued));
-		}		
+		}
 		dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_ACCRUAL_PERIODICITY , accrualPeriodicity);
 		dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_SYSTEM_OF_RECORDS, systemOfRecords);
 		dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_PRIMARY_IT_INVESTMENT_UII, primaryITInvestmentUII);
-		
+
 		dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_DATA_QUALITY, dataQuality);
 		dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_LANDING_PAGE, landingPage);
 
@@ -922,7 +922,7 @@ public class Dataset implements Comparable<Dataset> {
 			distributionListJSONArray.add(distribution.toProjectOpenDataJSON());
 		}
 		dataSetJSON.put(Distribution.PROJECT_OPEN_DATA_DISTRIBUTION, distributionListJSONArray);
-		
+
 		if (programCodeList.size() > 0)
 		{
 			dataSetJSON.put(PROJECT_OPEN_DATA_DATASET_PROGRAM_CODE, programCodeList);
@@ -942,23 +942,23 @@ public class Dataset implements Comparable<Dataset> {
 		}
 
 		dataSetJSON.put("notes", comments);
-		
+
 		//The following attributes are legacy from before Project Open Data
 		//dataSetJSON.put("tagString", tagList);
 		//dataSetJSON.put("revisionTimestamp", revisionTimeStamp);
 		//dataSetJSON.put("dataDict", dataDict);
 		//dataSetJSON.put("ownerOrg", ownerOrg);
-		
+
 		return dataSetJSON;
 	}
-	
+
 	/**
 	 * Converts Project Open Data compliant JSONObject to class Dataset
 	 * <p>
 	 * Straight forward parsing of POD compliant data which could probably be done in gson.  This is handparsed
 	 * because of problems moving from 1.0 -> 1.1 plus the CKAN imports.  The goal is also compliance with
 	 * DCAT.
-	 * 
+	 *
 	 * @param dataSetObject JSONObject This is Project Open Data 1.1 compliant json object.
 	 */
 	public void loadFromProjectOpenDataJSON(JSONObject dataSetObject) throws DatasetException
@@ -967,7 +967,7 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			throw new NullPointerException("datasetObject cannot be null");
 		}
-		
+
 		setAccessLevel((String)dataSetObject.get(PROJECT_OPEN_DATA_DATASET_ACCESS_LEVEL));
 		setAccrualPeriodicity((String)dataSetObject.get(PROJECT_OPEN_DATA_DATASET_ACCRUAL_PERIODICITY));
 		setConformsTo((String) dataSetObject.get(PROJECT_OPEN_DATA_DATASET_CONFORMS_TO));
@@ -976,7 +976,7 @@ public class Dataset implements Comparable<Dataset> {
 		setDescribedByType ((String) dataSetObject.get(PROJECT_OPEN_DATA_DATASET_DESCRIBED_BY_TYPE));
 		setDescription ((String) dataSetObject.get(PROJECT_OPEN_DATA_DATASET_DESCRIPTION));
 		setIsPartOf((String) dataSetObject.get(PROJECT_OPEN_DATA_DATASET_IS_PART_OF));
-		setIssued ((String) dataSetObject.get(PROJECT_OPEN_DATA_DATASET_ISSUED));	
+		setIssued ((String) dataSetObject.get(PROJECT_OPEN_DATA_DATASET_ISSUED));
 		setLandingPage(dataSetObject.get(PROJECT_OPEN_DATA_DATASET_LANDING_PAGE));
 		setLicense((String) dataSetObject.get(PROJECT_OPEN_DATA_DATASET_LICENSE));
 		setModified ((String) dataSetObject.get(PROJECT_OPEN_DATA_DATASET_MODIFIED));
@@ -991,17 +991,17 @@ public class Dataset implements Comparable<Dataset> {
 		//These object returned for bureauCode and programCode could either be ArrayList or JSONArray.
 		setBureauCodeList(dataSetObject.get(PROJECT_OPEN_DATA_DATASET_BUREAU_CODE));
 		setProgramCodeList(dataSetObject.get(PROJECT_OPEN_DATA_DATASET_PROGRAM_CODE));
-		
+
 		//Common method for loading simple string arrays with no parsing exceptions
 		keywordList = loadArray(PROJECT_OPEN_DATA_DATASET_KEYWORD, dataSetObject);
 		languageList = loadArray(PROJECT_OPEN_DATA_DATASET_LANGUAGE, dataSetObject);
 		referenceList = loadArray(PROJECT_OPEN_DATA_DATASET_REFERENCES, dataSetObject);
-		themeList = loadArray(PROJECT_OPEN_DATA_DATASET_THEME, dataSetObject);	
-		
+		themeList = loadArray(PROJECT_OPEN_DATA_DATASET_THEME, dataSetObject);
+
 		//load objects Publisher, Contact and Distributions
 		System.out.println(title);
 		loadDistributionList(dataSetObject.get(Distribution.PROJECT_OPEN_DATA_DISTRIBUTION));
-		
+
 		try{
 			publisher.loadDatasetFromPOD_JSON((JSONObject)dataSetObject.get(Publisher.PROJECT_OPEN_DATA_PUBLISHER));
 		}
@@ -1016,19 +1016,19 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			dsEx.addError(e.toString());
 		}
-		
+
 		if (!validateDataset() || dsEx.exceptionSize() > 0)
 		{
 			dsEx.setTitle(title);
 			dsEx.setUniqueIdentifier(uniqueIdentifier);
 			throw (dsEx);
-		}		
+		}
 	}
-	
+
 	/**
 	 * This method will determine if the instance is List<JSONObject> or an Array List
 	 * Fromt here it will call the approriate function.
-	 * 
+	 *
 	 * This might benefit from using generics or converting one list to the other
 	 * @param distributionObject
 	 */
@@ -1049,7 +1049,7 @@ public class Dataset implements Comparable<Dataset> {
 			for (int i = 0; i < distributionArrayList.size(); i++)
 			{
 				distributionArray.add((JSONObject) distributionArrayList.get(i));
-			}			
+			}
 		}
 		else if (distributionObject instanceof JSONArray)
 		{
@@ -1078,13 +1078,13 @@ public class Dataset implements Comparable<Dataset> {
 		}
 		distributionList.add(distribution);
 	}
-	
+
 	/**
 	 * Loads List<String> into JSONArray for fields that are strings of lists.
 	 * <p>
 	 * A common datatype in Project Open Data is a list of strings.  Examples include bureauCode,
 	 * Program Code, Theme and Language.  This is a helper.
-	 * 
+	 *
 	 * @param key String The key in key-value.  For example bureauCode, category, language.
 	 * @param dataSetObject JSONObject The dataset jsonobject in Project Open Data 1.1 compliance
 	 * @return List<String> Conversion of the json to java List<String> instance variable.
@@ -1092,14 +1092,14 @@ public class Dataset implements Comparable<Dataset> {
 	private List<String> loadArray(String key, JSONObject dataSetObject)
 	{
 		String value = "";
-		
+
 		//There are instances when this is not a JSONList, specifically when directly
 		//loading from a Dataset object
 		if (dataSetObject.get(key) instanceof ArrayList)
 		{
 			return (ArrayList<String>)dataSetObject.get(key);
 		}
-		
+
 		JSONArray jsonArray = (JSONArray) dataSetObject.get(key);
 		List<String> returnList = new ArrayList<String>();
 		if (jsonArray != null)
@@ -1116,7 +1116,7 @@ public class Dataset implements Comparable<Dataset> {
 	public String getTitle() {
 		return title;
 	}
-	
+
 	/**
 	 * Changes title to CKAN compliant name.
 	 * <p>
@@ -1138,9 +1138,9 @@ public class Dataset implements Comparable<Dataset> {
 		 */
 		title = title.replace("&quot;", "'");
 		title = title.replace("&amp;", "&");
-		this.title = title;	
+		this.title = title;
 	}
-	
+
 	public String getConformsTo() {
 		return conformsTo;
 	}
@@ -1166,7 +1166,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setIssued(Date issued) {
 		this.issued = issued;
 	}
-	
+
 	private void setIssued(String issued)
 	{
 		if (issued != null)
@@ -1189,7 +1189,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setModified(Date modified) {
 		this.modified = modified;
 	}
-	
+
 	public void setModified(String modified){
 		if (modified != null)
 		{
@@ -1220,7 +1220,7 @@ public class Dataset implements Comparable<Dataset> {
 			s.trim();
 		this.languageList = languageList;
 	}
-	
+
 	public void setLanguageList(String languageListString){
 		this.languageList.add(languageListString.trim());
 	}
@@ -1232,7 +1232,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setThemeList(List<String> themeList) {
 		this.themeList = themeList;
 	}
-	
+
 
 	/**
 	 * Converts CSV to List for themes
@@ -1280,7 +1280,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setAccrualPeriodicity(String accrualPeriodicity) {
 		if (accrualPeriodicity != null)
 		{
-			this.accrualPeriodicity = Utils.toISO8661(accrualPeriodicity);
+			this.accrualPeriodicity = Utils.toISO8661(accrualPeriodicity.trim());
 		}
 	}
 
@@ -1291,11 +1291,11 @@ public class Dataset implements Comparable<Dataset> {
 	public void setLandingPage(URL landingPage) {
 		this.landingPage = landingPage;
 	}
-	
+
 	private void setLandingPage(String landingPage){
 		if (landingPage != null && !landingPage.isEmpty())
 		{
-			try 
+			try
 			{
 				this.landingPage = new URL(landingPage);
 			}
@@ -1305,7 +1305,7 @@ public class Dataset implements Comparable<Dataset> {
 			}
 		}
 	}
-	
+
 	public void setLandingPage(Object landingPage) {
 		if (landingPage instanceof String)
 		{
@@ -1338,7 +1338,7 @@ public class Dataset implements Comparable<Dataset> {
 			}
 		}
 	}
-	
+
 	/**
 	 * This method is called from POD 1.1 import.  it calls setBureauCodeList with string
 	 * for additional validatins
@@ -1350,18 +1350,18 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			throw new NullPointerException("bureau array must have value to set a bureau list");
 		}
-		
+
 		for (int i = 0; i < bureauArray.size(); i++)
 		{
 			setBureauCodeList((String) bureauArray.get(i));
 		}
 	}
-	
+
 	public void setBureauCodeList(ArrayList<String> bureauCodeList)
 	{
 		this.bureauCodeList = bureauCodeList;
 	}
-	
+
 	public void setBureauCodeList(Object bureauCodeList)
 	{
 		if (bureauCodeList == null)
@@ -1390,7 +1390,7 @@ public class Dataset implements Comparable<Dataset> {
 			}
 		}
 	}
-	
+
 	public String getBureauName() {
 		return bureauName;
 	}
@@ -1418,7 +1418,7 @@ public class Dataset implements Comparable<Dataset> {
 	 */
 	public void setProgramCodeList(String programCode) throws ParseException
 	{
-		if (!programCodeList.contains(programCode))	
+		if (!programCodeList.contains(programCode))
 		{
 			if (Pattern.matches("\\d{3}:\\d{3}", programCode))
 			{
@@ -1431,20 +1431,20 @@ public class Dataset implements Comparable<Dataset> {
 			}
 		}
 	}
-	
+
 	public void setProgramCodeList(JSONArray programArray) throws ParseException
 	{
 		if (programArray == null)
 		{
 			throw new NullPointerException("bureau array must have value to set a program list");
 		}
-		
+
 		for (int i = 0; i < programArray.size(); i++)
 		{
 			setProgramCodeList((String) programArray.get(i));
 		}
 	}
-	
+
 	public void setProgramCodeList(Object programCodeList)
 	{
 		if (programCodeList == null)
@@ -1499,7 +1499,7 @@ public class Dataset implements Comparable<Dataset> {
 			}
 			else
 			{
-				dsEx.addError("access level must equal public, non-public or restricted");
+				dsEx.addError("access level must equal public, non-public or restricted, current value: \""+accessLevel+"\"");
 			}
 		}
 	}
@@ -1527,7 +1527,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setDataQuality(Boolean dataQuality) {
 		this.dataQuality = dataQuality;
 	}
-	
+
 	//handle string case
 	private void setDataQuality(String dataQuality)
 	{
@@ -1543,7 +1543,7 @@ public class Dataset implements Comparable<Dataset> {
 			}
 		}
 	}
-	
+
 	//handle any case
 	private void setDataQuality(Object dataQuality)
 	{
@@ -1564,11 +1564,11 @@ public class Dataset implements Comparable<Dataset> {
 	public void setReferenceList(List<String> referenceList) {
 		this.referenceList = referenceList;
 	}
-	
+
 	//CKAN can send this as a comma delimited field
 	private void setReferenceList(String referenceListString) {
 		final String[] referenceArray = referenceListString.split(",");
-		
+
 		if (referenceArray.length == 1)
 		{
 			referenceList.add(referenceListString);
@@ -1637,7 +1637,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setDistributionList(List<Distribution> distributionList) {
 		this.distributionList = distributionList;
 	}
-	
+
 	public String getLicense() {
 		return license;
 	}
@@ -1648,7 +1648,7 @@ public class Dataset implements Comparable<Dataset> {
 			this.license = license.trim();
 		}
 	}
-	
+
 	public String getIsPartOf() {
 		return isPartOf;
 	}
@@ -1656,7 +1656,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setIsPartOf(String isPartOf) {
 		this.isPartOf = isPartOf;
 	}
-	
+
 	public Date getMetadataModifiedDate() {
 		return metadataModifiedDate;
 	}
@@ -1664,7 +1664,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setMetadataModifiedDate(Date metadataModifiedDate) {
 		this.metadataModifiedDate = metadataModifiedDate;
 	}
-	
+
 	public void setMetadataModifiedDate(String metadataModifiedString){
 		if (metadataModifiedString != null)
 		{
@@ -1685,7 +1685,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setMetadataCreatedDate(Date metadataCreatedDate) {
 		this.metadataCreatedDate = metadataCreatedDate;
 	}
-	
+
 	public void setMetadataCreatedDate(String metadataCreatedDateString){
 		if (metadataCreatedDateString != null)
 		{
@@ -1706,7 +1706,7 @@ public class Dataset implements Comparable<Dataset> {
 	public void setRevisionTimeStamp(Date revisionTimeStamp) {
 		this.revisionTimeStamp = revisionTimeStamp;
 	}
-	
+
 	//TODO: Add generic method for setting date/string
 	public void setRevisionTimeStamp(String revisionTimeStampString){
 		if (revisionTimeStampString != null)
@@ -1719,7 +1719,7 @@ public class Dataset implements Comparable<Dataset> {
 			}
 		}
 	}
-	
+
 	public Element toLegacyXML(Document doc)
 	{
 		Element datasetElement = null;
@@ -1791,12 +1791,12 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			datasetElement.appendChild(fieldToLegacyXML("identifier", uniqueIdentifier, doc));
 		}
-		
-		//TODO: dataQuality, 
-		
+
+		//TODO: dataQuality,
+
 		datasetElement.appendChild(publisher.toLegacyXML(doc));
 		datasetElement.appendChild(contactPoint.toLegacyXML(doc));
-		
+
 		if (bureauCodeList.size() > 0)
 		{
 			datasetElement.appendChild(fieldToLegacyXML("bureauCode", Utils.listToCSV(bureauCodeList), doc));
@@ -1813,25 +1813,25 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			datasetElement.appendChild(fieldToLegacyXML("categories", Utils.listToCSV(themeList), doc));
 		}
-		
+
 		//TODO: Required field but Check size<>0
 		for (String tag: keywordList)
 		{
 		//	datasetElement.appendChild(fieldToLegacyXML("keyword", tag, doc));
 		}
-		
+
 		//TODO: required field but check size < 0
 		for (Distribution dist: distributionList)
 		{
 			datasetElement.appendChild(dist.toLegacyXML(doc));
 		}
-			
+
 		return datasetElement;
 	}
-	
-	
-	
-	
+
+
+
+
 	private Element fieldToLegacyXML(String elementName, String elementValue, Document doc)
 	{
 		Element fieldElement = null;
@@ -1839,7 +1839,7 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			return fieldElement;
 		}
-	
+
 		fieldElement = doc.createElement(elementName);
 		fieldElement.setTextContent(elementValue);
 		return fieldElement;
@@ -1851,10 +1851,10 @@ public class Dataset implements Comparable<Dataset> {
 	 * <p>
 	 * Required: title, description, keywordlist, modified, publisher, contactPoint, uniqueIdenifier
 	 * accesslevel, bureauCode, programCode.  Other business rules will be added in the future.
-	 * 
+	 *
 	 * This method also catches Publisher, ContactPoint exceptions.
-	 * 
-	 * 
+	 *
+	 *
 	 * @return Boolean True of data set is valid; false if invalid dataset
 	 */
 	//if Format == API and AccessURL == null
@@ -1903,7 +1903,7 @@ public class Dataset implements Comparable<Dataset> {
 		{
 			dsEx.addError(e.toString());
 		}
-		
+
 		if (uniqueIdentifier == null)
 		{
 			dsEx.addError("Identifier is required.");
@@ -1915,7 +1915,7 @@ public class Dataset implements Comparable<Dataset> {
 			validIndicator = false;
 		}
 		//extra distribution checks for dataset
-		//can't check distribution size unless access is filled so this is a case you 
+		//can't check distribution size unless access is filled so this is a case you
 		//need to run the program twice to find error.
 		else if (distributionList.size() == 0 && accessLevel.equals(AccessLevel.PUBLIC.toString()))
 		{
@@ -1925,7 +1925,7 @@ public class Dataset implements Comparable<Dataset> {
 		for (int i=0; i< distributionList.size(); i++)
 		{
 			final Distribution d = distributionList.get(i);
-			
+
 			try{
 				if (accessLevel == null)
 				{
@@ -1954,10 +1954,10 @@ public class Dataset implements Comparable<Dataset> {
 			//dsEx.addError("Program Code is required.");
 			//validIndicator = false;
 		}
-		
-		return validIndicator;			
+
+		return validIndicator;
 	}
-	
+
 	/**
 	 * Does not include legacy or class specific variables: commments, dsEx, ownerOrganization, webService
 	 */
@@ -1973,7 +1973,7 @@ public class Dataset implements Comparable<Dataset> {
 			return false;
 		}
 		Dataset ds_other = (Dataset)o;
-		
+
 		return new EqualsBuilder()
          .append(title, ds_other.title)
          .append(description, ds_other.description)
@@ -2005,7 +2005,7 @@ public class Dataset implements Comparable<Dataset> {
          .append(distributionList, ds_other.distributionList)
          .isEquals();
 	}
-	
+
 	/**
 	 * Does not include legacy or class specific variables: commments, dsEx, ownerOrganization, webService
 	 */
@@ -2024,22 +2024,22 @@ public class Dataset implements Comparable<Dataset> {
 				append(describedByType).
 				append(isPartOf).
 				append(issued).
-				append(keywordList). 
-				append(landingPage). 
-				append(languageList). 
-				append(license). 
-				append(modified). 
-				append(primaryITInvestmentUII). 
-				append(programCodeList). 
-				append(referenceList). 
-				append(rights). 
-				append(spatial). 
-				append(systemOfRecords). 
-				append(temporal). 
-				append(themeList). 
+				append(keywordList).
+				append(landingPage).
+				append(languageList).
+				append(license).
+				append(modified).
+				append(primaryITInvestmentUII).
+				append(programCodeList).
+				append(referenceList).
+				append(rights).
+				append(spatial).
+				append(systemOfRecords).
+				append(temporal).
+				append(themeList).
 				append(uniqueIdentifier).
-				append(contactPoint). 
-				append(publisher). 
+				append(contactPoint).
+				append(publisher).
 				append(distributionList).
 				toHashCode();
 	}
@@ -2066,12 +2066,12 @@ public class Dataset implements Comparable<Dataset> {
 				+ isPartOf + ", comments=" + comments + ", webService="
 				+ webService + ", ownerOrganization=" + ownerOrganization + "]";
 	}
-	
+
 	/**
 	 * Sorts list first by bureauName and then by title.  if bureau name is null compare by bureauCode
 	 */
 	@Override
-	public int compareTo(Dataset other) 
+	public int compareTo(Dataset other)
 	{
 		if (other==null)
 		{
@@ -2088,7 +2088,7 @@ public class Dataset implements Comparable<Dataset> {
 			agencyCompare = this.bureauCodeList.get(0).compareTo(other.bureauCodeList.get(0));
 		}
 		titleCompare = agencyCompare == 0 ? this.title.compareTo(other.title) : agencyCompare;
-	
+
 		return titleCompare;
     }
 }

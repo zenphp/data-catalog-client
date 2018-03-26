@@ -238,7 +238,7 @@ public class Utils {
 		}
 		//value not valid legacy Project Open Data or ISO 8661
 		System.out.println ("Invalid Period");
-		throw new IllegalArgumentException("Accrual Periodicity is invalid");
+		throw new IllegalArgumentException("Accrual Periodicity is invalid: "+ periodicity);
 		
 	}
 	
